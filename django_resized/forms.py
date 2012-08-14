@@ -29,7 +29,7 @@ class ResizedImageField(ImageField):
     
     attr_class = ResizedImageFieldFile
 
-    def __init__(self, max_width=800, max_height=600,  *args, **kwargs):
+    def __init__(self, verbose_name=None, name=None, upload_to='', max_width=800, max_height=600, storage=None, **kwargs):
         self.max_width = max_width
         self.max_height = max_height
-        super(ResizedImageField, self).__init__(*args, **kwargs) 
+        super(ResizedImageField, self).__init__(verbose_name, name, upload_to, storage, **kwargs) 
