@@ -7,20 +7,20 @@
 #
 
 import os
-from setuptools import setup
+from setuptools import setup, find_packages
 
-
-readme = open(os.path.join(os.path.dirname(__file__), 'README.markdown')).read()
 
 setup(
     name     = 'django-resized',
-    version  = '0.1',
-    packages = ['django_resized'],
+    version  = '0.1.1',
+    packages = find_packages(),
 
-    requires = ['python (>= 2.5)', 'django (>= 1.3)'],
+    install_requires = [
+        'django >= 1.2',
+    ],
 
     description  = 'Deletes old files.',
-    long_description = readme,
+    long_description = open('README.markdown').read(),
     author       = 'Ilya Shalyapin',
     author_email = 'ishalyapin@gmail.com',
     url          = 'https://github.com/un1t/django-resized',
