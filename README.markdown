@@ -1,10 +1,6 @@
 # django-resized
 
-    Resizes image origin to specified size.
-    
-## Requirements
-
-  - sorl-thumbnail, http://thumbnail.sorl.net/
+Resizes image origin to specified size. Compatible with sorl-thumbnail.
 
 ## Installation
     
