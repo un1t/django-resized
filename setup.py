@@ -12,13 +12,9 @@ from setuptools import setup, find_packages
 
 setup(
     name     = 'django-resized',
-    version  = '0.1.1',
+    version  = '0.1.2',
     packages = find_packages(),
-
-    install_requires = [
-        'django >= 1.2',
-    ],
-
+    requires = ['python (>= 2.5)', 'django (>= 1.0)'],
     description  = 'Deletes old files.',
     long_description = open('README.markdown').read(),
     author       = 'Ilya Shalyapin',
