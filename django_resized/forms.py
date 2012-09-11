@@ -2,12 +2,16 @@ import os
 import Image
 from StringIO import StringIO
 
+from django.conf import settings
 from django.core.files.base import ContentFile
 
 try:
     from sorl.thumbnail import ImageField
 except ImportError:
     from django.db.models import ImageField
+
+
+DEFAULT_SIZE = getattr(settings, 'DJANGORESIZED_DEFAULT_SIZE', [1920, 1080])
 
 
 class ResizedImageFieldFile(ImageField.attr_class):
@@ -32,6 +36,6 @@ class ResizedImageField(ImageField):
     attr_class = ResizedImageFieldFile
 
     def __init__(self, verbose_name=None, name=None, **kwargs):
-        self.max_width = kwargs.get('max_width', 800)
-        self.max_height = kwargs.get('max_height', 600)
+        self.max_width = kwargs.get('max_width', DEFAULT_SIZE[0])
+        self.max_height = kwargs.get('max_height', DEFAULT_SIZE[1])
         super(ResizedImageField, self).__init__(verbose_name, name, **kwargs) 

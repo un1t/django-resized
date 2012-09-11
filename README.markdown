@@ -7,6 +7,14 @@ Resizes image origin to specified size. Compatible with sorl-thumbnail.
     pip install django-resized
 
 
+# Configuration (optional)
+
+settings.py
+
+    DJANGORESIZED_DEFAULT_SIZE = [800, 600]
+
+Default size is 1920x1080.
+
 ## Usage 
 
 models.py
