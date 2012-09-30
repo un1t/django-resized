@@ -24,7 +24,7 @@ class ResizedImageFieldFile(ImageField.attr_class):
             self.field.max_width, 
             self.field.max_height
             ), Image.ANTIALIAS)
-        img.save(new_content, format=img.format)
+        img.save(new_content, format=img.format, **img.info)
 
         new_content = ContentFile(new_content.getvalue())
 
