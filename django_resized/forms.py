@@ -36,6 +36,6 @@ class ResizedImageField(ImageField):
     attr_class = ResizedImageFieldFile
 
     def __init__(self, verbose_name=None, name=None, **kwargs):
-        self.max_width = kwargs.get('max_width', DEFAULT_SIZE[0])
-        self.max_height = kwargs.get('max_height', DEFAULT_SIZE[1])
+        self.max_width = kwargs.pop('max_width', DEFAULT_SIZE[0])
+        self.max_height = kwargs.pop('max_height', DEFAULT_SIZE[1])
         super(ResizedImageField, self).__init__(verbose_name, name, **kwargs) 
