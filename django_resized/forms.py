@@ -1,5 +1,8 @@
 import os
-import Image
+try:
+    from PIL import Image
+except ImportError:
+    import Image
 from StringIO import StringIO
 
 from django.conf import settings
