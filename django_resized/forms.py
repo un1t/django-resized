@@ -28,7 +28,7 @@ class ResizedImageFieldFile(ImageField.attr_class):
             self.field.max_height
             ), Image.ANTIALIAS)
         
-        if self.field.maintain_aspect_ratio:
+        if self.field.use_thumnail_aspect_ratio:
             img = Image.new("RGBA", (self.field.max_width, self.field.max_height), self.field.background_color)
             img.paste(thumb, ((self.field.max_width - thumb.size[0]) / 2, (self.field.max_height - thumb.size[1]) / 2))
         else:
@@ -48,6 +48,6 @@ class ResizedImageField(ImageField):
     def __init__(self, verbose_name=None, name=None, **kwargs):
         self.max_width = kwargs.pop('max_width', DEFAULT_SIZE[0])
         self.max_height = kwargs.pop('max_height', DEFAULT_SIZE[1])
-        self.maintain_aspect_ratio = kwargs.pop('maintain_aspect_ratio', False)
+        self.use_thumnail_aspect_ratio = kwargs.pop('use_thumnail_aspect_ratio', False)
         self.background_color = kwargs.pop('background_color', (255, 255, 255, 0))
         super(ResizedImageField, self).__init__(verbose_name, name, **kwargs) 
