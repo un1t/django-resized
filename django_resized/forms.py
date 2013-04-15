@@ -15,6 +15,7 @@ except ImportError:
 
 
 DEFAULT_SIZE = getattr(settings, 'DJANGORESIZED_DEFAULT_SIZE', [1920, 1080])
+DEFAULT_COLOR = (255, 255, 255, 0)
 
 
 class ResizedImageFieldFile(ImageField.attr_class):
@@ -49,5 +50,24 @@ class ResizedImageField(ImageField):
         self.max_width = kwargs.pop('max_width', DEFAULT_SIZE[0])
         self.max_height = kwargs.pop('max_height', DEFAULT_SIZE[1])
         self.use_thumbnail_aspect_ratio = kwargs.pop('use_thumbnail_aspect_ratio', False)
-        self.background_color = kwargs.pop('background_color', (255, 255, 255, 0))
+        self.background_color = kwargs.pop('background_color', DEFAULT_COLOR)
         super(ResizedImageField, self).__init__(verbose_name, name, **kwargs) 
+
+
+try:
+    from south.modelsinspector import add_introspection_rules
+    rules = [
+        (
+            (ResizedImageField,),
+            [],
+            {
+                "max_width": ["max_width", {'default': DEFAULT_SIZE[0]}],
+                "max_height": ["max_height", {'default': DEFAULT_SIZE[1]}],
+                "use_thumbnail_aspect_ratio": ["use_thumbnail_aspect_ratio", {'default': False}],
+                "background_color": ["background_color", {'default': DEFAULT_COLOR}],
+            },
+        )
+    ]
+    add_introspection_rules(rules, ["^django_resized\.forms\.ResizedImageField"])
+except ImportError:
+    pass
