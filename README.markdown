@@ -25,17 +25,16 @@ Defaults to False.  If set to True, the thumbnail will have the full specified o
 
 Defaults to transparent or white (depending on whether the source image supports transparency).  Only used if use_thumnail_aspect_ratio is True.
 
+    format
+
+Defaults to jpeg. Defines the file format of the resulting image.
+
 ## Usage 
 
 models.py
 
     from django_resized import ResizedImageField
-    
+
     class MyModel(models.Model):
         ...
         image = ResizedImageField(max_width=500, max_height=300, upload_to='whatever')
-
-
-
-
-
