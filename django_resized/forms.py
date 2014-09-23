@@ -1,8 +1,8 @@
 import os
 try:
-    from PIL import Image
+    from PIL import Image, ImageFile
 except ImportError:
-    import Image
+    import Image, ImageFile
 from StringIO import StringIO
 
 from django.conf import settings
@@ -34,8 +34,12 @@ class ResizedImageFieldFile(ImageField.attr_class):
             img.paste(thumb, ((self.field.max_width - thumb.size[0]) / 2, (self.field.max_height - thumb.size[1]) / 2))
         else:
             img = thumb
-        
-        img.save(new_content, format=thumb.format, **img.info)
+
+        try:
+            img.save(new_content, format=thumb.format, **img.info)
+        except IOError:
+            ImageFile.MAXBLOCK = img.size[0] * img.size[1]
+            img.save(new_content, format=thumb.format, **img.info)
 
         new_content = ContentFile(new_content.getvalue())
 
