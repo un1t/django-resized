@@ -12,7 +12,7 @@ from setuptools import setup, find_packages
 
 setup(
     name     = 'django-resized',
-    version  = '0.2.5',
+    version  = '0.2.6',
     packages = find_packages(),
     requires = ['python (>= 2.5)', 'django (>= 1.0)'],
     description  = 'Deletes old files.',
