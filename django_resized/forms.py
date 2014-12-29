@@ -3,7 +3,12 @@ try:
     from PIL import Image
 except ImportError:
     import Image
-from StringIO import StringIO
+try:
+    # python3
+    from io import StringIO
+except ImportError:
+    # python2
+    from StringIO import StringIO
 
 from django.conf import settings
 from django.core.files.base import ContentFile
