@@ -17,13 +17,13 @@ Default size is 1920x1080.
 
 ## Field options
 
-    use_thumnail_aspect_ratio
+    use_thumbnail_aspect_ratio
 
 Defaults to False.  If set to True, the thumbnail will have the full specified or default size and will be centered if it does not occupy the full space in either dimension.
 
     background_color
 
-Defaults to transparent or white (depending on whether the source image supports transparency).  Only used if use_thumnail_aspect_ratio is True.
+Defaults to transparent or white (depending on whether the source image supports transparency).  Only used if use_thumbnail_aspect_ratio is True.
 
 ## Usage 
 
