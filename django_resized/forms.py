@@ -1,8 +1,9 @@
 import os
 try:
-    from PIL import Image
+    from PIL import Image, ImageFile
 except ImportError:
-    import Image
+    import Image, ImageFile
+
 try:
     # python3
     from io import StringIO
@@ -24,23 +25,27 @@ DEFAULT_COLOR = (255, 255, 255, 0)
 
 
 class ResizedImageFieldFile(ImageField.attr_class):
-    
+
     def save(self, name, content, save=True):
         new_content = StringIO()
         content.file.seek(0)
         thumb = Image.open(content.file)
         thumb.thumbnail((
-            self.field.max_width, 
+            self.field.max_width,
             self.field.max_height
             ), Image.ANTIALIAS)
-        
+
         if self.field.use_thumbnail_aspect_ratio:
             img = Image.new("RGBA", (self.field.max_width, self.field.max_height), self.field.background_color)
             img.paste(thumb, ((self.field.max_width - thumb.size[0]) / 2, (self.field.max_height - thumb.size[1]) / 2))
         else:
             img = thumb
-        
-        img.save(new_content, format=thumb.format, **img.info)
+
+        try:
+            img.save(new_content, format=thumb.format, **img.info)
+        except IOError:
+            ImageFile.MAXBLOCK = img.size[0] * img.size[1]
+            img.save(new_content, format=thumb.format, **img.info)
 
         new_content = ContentFile(new_content.getvalue())
 
@@ -48,7 +53,7 @@ class ResizedImageFieldFile(ImageField.attr_class):
 
 
 class ResizedImageField(ImageField):
-    
+
     attr_class = ResizedImageFieldFile
 
     def __init__(self, verbose_name=None, name=None, **kwargs):
