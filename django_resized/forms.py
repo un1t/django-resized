@@ -6,7 +6,7 @@ except ImportError:
 
 try:
     # python3
-    from io import StringIO
+    from io import BytesIO as StringIO
 except ImportError:
     # python2
     from StringIO import StringIO
