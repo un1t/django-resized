@@ -35,7 +35,7 @@ models.py
         ...
         image = ResizedImageField(max_width=500, max_height=300, upload_to='whatever')
 
+## How to run tests
 
-
-
-
+    pip install -r django_resized/testapp/requirements.txt
+    ./runtests.py
