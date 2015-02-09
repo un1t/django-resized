@@ -12,10 +12,10 @@ from setuptools import setup, find_packages
 
 setup(
     name     = 'django-resized',
-    version  = '0.2.8',
+    version  = '0.3.0',
     packages = ['django_resized'],
-    requires = ['python (>= 2.5)', 'django (>= 1.0)'],
-    description  = 'Deletes old files.',
+    requires = ['python (>= 2.7)', 'django (>= 1.7)'],
+    description  = 'Resizes image origin to specified size.',
     long_description = open('README.markdown').read(),
     author       = 'Ilya Shalyapin',
     author_email = 'ishalyapin@gmail.com',
