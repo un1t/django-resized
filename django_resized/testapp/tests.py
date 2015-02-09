@@ -42,3 +42,10 @@ class ResizeTest(TestCase):
         )
         im4 = Image.open(product.image4.path)
         self.assertEquals(im4.size, (100, 100))
+
+    def test_resize_with_quality(self):
+        product = Product.objects.create(
+            image1=File(open('media/big.jpg')),
+            image5=File(open('media/big.jpg')),
+        )
+        self.assertTrue(os.path.getsize(product.image1.path) > os.path.getsize(product.image5.path))

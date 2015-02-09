@@ -28,13 +28,13 @@ class ResizedImageFieldFile(ImageField.attr_class):
         if self.field.crop:
             thumb = ImageOps.fit(
                 img,
-                (self.field.width, self.field.height),
+                self.field.size,
                 Image.ANTIALIAS,
                 centering=self.get_centring()
             )
         else:
             img.thumbnail(
-                (self.field.width, self.field.height),
+                self.field.size,
                 Image.ANTIALIAS,
             )
             thumb = img
@@ -46,17 +46,19 @@ class ResizedImageFieldFile(ImageField.attr_class):
         super(ResizedImageFieldFile, self).save(name, new_content, save)
 
     def get_centring(self):
+        vertical = {
+            'top': 0,
+            'middle': 0.5,
+            'bottom': 1,
+        }
+        horizontal = {
+            'left': 0,
+            'center': 0.5,
+            'right': 1,
+        }
         return [
-            {
-                'top': 0,
-                'middle': 0.5,
-                'bottom': 1,
-            }[self.field.crop[0]],
-            {
-                'left': 0,
-                'center': 0.5,
-                'right': 1,
-            }[self.field.crop[1]],
+            vertical[self.field.crop[0]],
+            horizontal[self.field.crop[1]],
         ]
 
 
@@ -65,29 +67,7 @@ class ResizedImageField(ImageField):
     attr_class = ResizedImageFieldFile
 
     def __init__(self, verbose_name=None, name=None, **kwargs):
-        self.width = kwargs.pop('width', DEFAULT_SIZE[0])
-        self.height = kwargs.pop('height', DEFAULT_SIZE[1])
+        self.size = kwargs.pop('size', DEFAULT_SIZE)
         self.crop = kwargs.pop('crop', None)
         self.quality = kwargs.pop('quality', DEFAULT_QUALITY)
         super(ResizedImageField, self).__init__(verbose_name, name, **kwargs)
-
-
-try:
-    from south.modelsinspector import add_introspection_rules
-except ImportError:
-    pass
-else:
-    rules = [
-        (
-            (ResizedImageField,),
-            [],
-            {
-                "width": ["width", {'default': DEFAULT_SIZE[0]}],
-                "height": ["height", {'default': DEFAULT_SIZE[1]}],
-                "crop": ["crop", {'default': False}],
-                "quality": ["quality", {'default': DEFAULT_QUALITY}],
-            },
-        )
-    ]
-    add_introspection_rules(rules, ["^django_resized\.forms\.ResizedImageField"])
-

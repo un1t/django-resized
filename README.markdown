@@ -23,10 +23,17 @@ models.py
 
     class MyModel(models.Model):
         ...
-        image1 = ResizedImageField(width=500, height=300, upload_to='whatever')
-        image2 = ResizedImageField(width=500, height=300, crop=['top', 'left'], upload_to='whatever')
-        image2 = ResizedImageField(width=500, height=300, crop=['middle', 'center'], upload_to='whatever')
-        image2 = ResizedImageField(width=500, height=300, quality=75, upload_to='whatever')
+        image1 = ResizedImageField(size=[500, 300], upload_to='whatever')
+        image2 = ResizedImageField(size=[100, 100], crop=['top', 'left'], upload_to='whatever')
+        image3 = ResizedImageField(size=[100, 100], crop=['middle', 'center'], upload_to='whatever')
+        image4 = ResizedImageField(size=[500, 300], height=300, quality=75, upload_to='whatever')
+
+### Options
+
+    size - max width and height, for example [640, 480]
+    crop - resize and crop. ['top', 'left'] - top left corner, ['middle', 'center'] is center cropping, ['bottom', 'right'] - crop right bottom corner.
+    quality - quality of resized image 1..100
+
 
 ## How to run tests
 
