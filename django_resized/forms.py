@@ -1,15 +1,10 @@
 import os
-try:
-    from PIL import Image, ImageFile
-except ImportError:
-    import Image, ImageFile
+from PIL import Image, ImageFile, ImageOps
 
 try:
-    # python3
-    from io import BytesIO as StringIO
+    from io import BytesIO as StringIO # python3
 except ImportError:
-    # python2
-    from StringIO import StringIO
+    from StringIO import StringIO # python2
 
 from django.conf import settings
 from django.core.files.base import ContentFile
@@ -21,7 +16,7 @@ except ImportError:
 
 
 DEFAULT_SIZE = getattr(settings, 'DJANGORESIZED_DEFAULT_SIZE', [1920, 1080])
-DEFAULT_COLOR = (255, 255, 255, 0)
+DEFAULT_QUALITY = getattr(settings, 'DJANGORESIZED_DEFAULT_QUALITY', 0)
 
 
 class ResizedImageFieldFile(ImageField.attr_class):
@@ -29,27 +24,40 @@ class ResizedImageFieldFile(ImageField.attr_class):
     def save(self, name, content, save=True):
         new_content = StringIO()
         content.file.seek(0)
-        thumb = Image.open(content.file)
-        thumb.thumbnail((
-            self.field.max_width,
-            self.field.max_height
-            ), Image.ANTIALIAS)
-
-        if self.field.use_thumbnail_aspect_ratio:
-            img = Image.new("RGBA", (self.field.max_width, self.field.max_height), self.field.background_color)
-            img.paste(thumb, ((self.field.max_width - thumb.size[0]) / 2, (self.field.max_height - thumb.size[1]) / 2))
+        img = Image.open(content.file)
+        if self.field.crop:
+            thumb = ImageOps.fit(
+                img,
+                (self.field.width, self.field.height),
+                Image.ANTIALIAS,
+                centering=self.get_centring()
+            )
         else:
-            img = thumb
+            img.thumbnail(
+                (self.field.width, self.field.height),
+                Image.ANTIALIAS,
+            )
+            thumb = img
 
-        try:
-            img.save(new_content, format=thumb.format, **img.info)
-        except IOError:
-            ImageFile.MAXBLOCK = img.size[0] * img.size[1]
-            img.save(new_content, format=thumb.format, **img.info)
-
+        ImageFile.MAXBLOCK = max(ImageFile.MAXBLOCK, thumb.size[0] * thumb.size[1])
+        thumb.save(new_content, format=img.format, quality=self.field.quality, **img.info)
         new_content = ContentFile(new_content.getvalue())
 
         super(ResizedImageFieldFile, self).save(name, new_content, save)
+
+    def get_centring(self):
+        return [
+            {
+                'top': 0,
+                'middle': 0.5,
+                'bottom': 1,
+            }[self.field.crop[0]],
+            {
+                'left': 0,
+                'center': 0.5,
+                'right': 1,
+            }[self.field.crop[1]],
+        ]
 
 
 class ResizedImageField(ImageField):
@@ -57,27 +65,29 @@ class ResizedImageField(ImageField):
     attr_class = ResizedImageFieldFile
 
     def __init__(self, verbose_name=None, name=None, **kwargs):
-        self.max_width = kwargs.pop('max_width', DEFAULT_SIZE[0])
-        self.max_height = kwargs.pop('max_height', DEFAULT_SIZE[1])
-        self.use_thumbnail_aspect_ratio = kwargs.pop('use_thumbnail_aspect_ratio', False)
-        self.background_color = kwargs.pop('background_color', DEFAULT_COLOR)
-        super(ResizedImageField, self).__init__(verbose_name, name, **kwargs) 
+        self.width = kwargs.pop('width', DEFAULT_SIZE[0])
+        self.height = kwargs.pop('height', DEFAULT_SIZE[1])
+        self.crop = kwargs.pop('crop', None)
+        self.quality = kwargs.pop('quality', DEFAULT_QUALITY)
+        super(ResizedImageField, self).__init__(verbose_name, name, **kwargs)
 
 
 try:
     from south.modelsinspector import add_introspection_rules
+except ImportError:
+    pass
+else:
     rules = [
         (
             (ResizedImageField,),
             [],
             {
-                "max_width": ["max_width", {'default': DEFAULT_SIZE[0]}],
-                "max_height": ["max_height", {'default': DEFAULT_SIZE[1]}],
-                "use_thumbnail_aspect_ratio": ["use_thumbnail_aspect_ratio", {'default': False}],
-                "background_color": ["background_color", {'default': DEFAULT_COLOR}],
+                "width": ["width", {'default': DEFAULT_SIZE[0]}],
+                "height": ["height", {'default': DEFAULT_SIZE[1]}],
+                "crop": ["crop", {'default': False}],
+                "quality": ["quality", {'default': DEFAULT_QUALITY}],
             },
         )
     ]
     add_introspection_rules(rules, ["^django_resized\.forms\.ResizedImageField"])
-except ImportError:
-    pass
+

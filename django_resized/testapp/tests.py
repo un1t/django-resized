@@ -19,7 +19,7 @@ class ResizeTest(TestCase):
             image1=File(open('media/big.jpg')),
         )
         im1 = Image.open(product.image1.path)
-        self.assertEquals(im1.size, (40, 30))
+        self.assertEquals(im1.size, (466, 350))
 
     def test_resizes_settings_default(self):
         product = Product.objects.create(
@@ -28,16 +28,17 @@ class ResizeTest(TestCase):
         im2 = Image.open(product.image2.path)
         self.assertEquals(im2.size, (400, 300))
 
-    def test_resize_aspect_ratio_true(self):
+    def test_resize_crop_center(self):
+        product = Product.objects.create(
+            image3=File(open('media/big.jpg')),
+        )
+        im3 = Image.open(product.image3.path)
+        self.assertEquals(im3.size, (40, 40))
+
+
+    def test_resize_crop_right(self):
         product = Product.objects.create(
             image4=File(open('media/big.jpg')),
         )
         im4 = Image.open(product.image4.path)
-        self.assertEquals(im4.size, (40, 40))
-
-    def test_resize_aspect_ratio_false(self):
-        product = Product.objects.create(
-            image5=File(open('media/big.jpg')),
-        )
-        im5 = Image.open(product.image5.path)
-        self.assertEquals(im5.size, (40, 30))
+        self.assertEquals(im4.size, (100, 100))
