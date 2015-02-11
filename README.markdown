@@ -39,12 +39,3 @@ models.py
 
     pip install -r django_resized/testapp/requirements.txt
     ./runtests.py
-
-## Move to 0.3.x
-
-If you use South, you may receive such error:
-
-    TypeError: __init__() got an unexpected keyword argument 'max_width'
-
-Just remove old arguments (max_width, max_height, use_thumbnail_aspect_ratio, background_color) from last South migrations file.
-

@@ -1,4 +1,5 @@
 import os
+import sys
 from PIL import Image, ImageFile, ImageOps
 
 try:
@@ -67,10 +68,18 @@ class ResizedImageField(ImageField):
     attr_class = ResizedImageFieldFile
 
     def __init__(self, verbose_name=None, name=None, **kwargs):
+        # migrate from 0.2.x
+        depricated = ('max_width', 'max_height', 'use_thumbnail_aspect_ratio', 'background_color')
+        for argname in depricated:
+            if argname in kwargs:
+                sys.stderr.write('Error: Keyword argument %s is deprecated for ResizedImageField, see README https://github.com/un1t/django-resized\n' % argname)
+                del kwargs[argname]
+
         self.size = kwargs.pop('size', DEFAULT_SIZE)
         self.crop = kwargs.pop('crop', None)
         self.quality = kwargs.pop('quality', DEFAULT_QUALITY)
         super(ResizedImageField, self).__init__(verbose_name, name, **kwargs)
+
 
 try:
     from south.modelsinspector import add_introspection_rules
