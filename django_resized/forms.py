@@ -71,3 +71,18 @@ class ResizedImageField(ImageField):
         self.crop = kwargs.pop('crop', None)
         self.quality = kwargs.pop('quality', DEFAULT_QUALITY)
         super(ResizedImageField, self).__init__(verbose_name, name, **kwargs)
+
+try:
+    from south.modelsinspector import add_introspection_rules
+except ImportError:
+    pass
+else:
+    rules = [
+        (
+            (ResizedImageField,),
+            [],
+            {
+            },
+        )
+    ]
+    add_introspection_rules(rules, ["^django_resized\.forms\.ResizedImageField"])
