@@ -26,6 +26,13 @@ class ResizedImageFieldFile(ImageField.attr_class):
         new_content = StringIO()
         content.file.seek(0)
         img = Image.open(content.file)
+
+        if not self.field.keep_meta:
+            image_without_exif = Image.new(img.mode, img.size)
+            image_without_exif.putdata(img.getdata())
+            image_without_exif.format = img.format
+            img = image_without_exif
+
         if self.field.crop:
             thumb = ImageOps.fit(
                 img,
@@ -78,6 +85,7 @@ class ResizedImageField(ImageField):
         self.size = kwargs.pop('size', DEFAULT_SIZE)
         self.crop = kwargs.pop('crop', None)
         self.quality = kwargs.pop('quality', DEFAULT_QUALITY)
+        self.keep_meta = kwargs.pop('keep_meta', True)
         super(ResizedImageField, self).__init__(verbose_name, name, **kwargs)
 
 

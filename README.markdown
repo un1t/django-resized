@@ -33,6 +33,7 @@ models.py
     size - max width and height, for example [640, 480]
     crop - resize and crop. ['top', 'left'] - top left corner, ['middle', 'center'] is center cropping, ['bottom', 'right'] - crop right bottom corner.
     quality - quality of resized image 1..100
+    keep_meta - keep EXIF and other meta data, default True
 
 
 ## How to run tests
