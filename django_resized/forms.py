@@ -18,6 +18,7 @@ except ImportError:
 
 DEFAULT_SIZE = getattr(settings, 'DJANGORESIZED_DEFAULT_SIZE', [1920, 1080])
 DEFAULT_QUALITY = getattr(settings, 'DJANGORESIZED_DEFAULT_QUALITY', 0)
+DEFAULT_KEEP_META = getattr(settings, 'DJANGORESIZED_DEFAULT_KEEP_META', True)
 
 
 class ResizedImageFieldFile(ImageField.attr_class):
@@ -85,7 +86,7 @@ class ResizedImageField(ImageField):
         self.size = kwargs.pop('size', DEFAULT_SIZE)
         self.crop = kwargs.pop('crop', None)
         self.quality = kwargs.pop('quality', DEFAULT_QUALITY)
-        self.keep_meta = kwargs.pop('keep_meta', True)
+        self.keep_meta = kwargs.pop('keep_meta', DEFAULT_KEEP_META)
         super(ResizedImageField, self).__init__(verbose_name, name, **kwargs)
 
 
