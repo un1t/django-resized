@@ -70,4 +70,10 @@ class ResizeTest(TestCase):
     def has_exif(self, filename):
         return bool(Image.open(filename)._getexif())
 
+    def test_resize_without_upscale(self):
+        product = Product.objects.create(
+            image7=File(open('media/big.jpg')),
+        )
+        im7 = Image.open(product.image7.path)
+        self.assertEquals(im7.size, (604, 453))
 
