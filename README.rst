@@ -1,24 +1,30 @@
-# django-resized
-
 Resizes image origin to specified size. Compatible with sorl-thumbnail.
 
-## Installation
+Features
+========
+
+- Support for Django 1.3, 1.4, 1.5, 1.6 and 1.7
+- Python 3 support
+
+Installation
+============
 
     pip install django-resized
 
 
-# Configuration (optional)
+Configuration (optional)
+========================
 
-settings.py
+settings.py ::
 
     DJANGORESIZED_DEFAULT_SIZE = [1920, 1080]
     DJANGORESIZED_DEFAULT_QUALITY = 75
     DJANGORESIZED_DEFAULT_KEEP_META = True
 
+Usage
+=====
 
-## Usage
-
-models.py
+models.py ::
 
     from django_resized import ResizedImageField
 
@@ -29,15 +35,18 @@ models.py
         image3 = ResizedImageField(size=[100, 100], crop=['middle', 'center'], upload_to='whatever')
         image4 = ResizedImageField(size=[500, 300], quality=75, upload_to='whatever')
 
-### Options
-
-    size - max width and height, for example [640, 480]
-    crop - resize and crop. ['top', 'left'] - top left corner, ['middle', 'center'] is center cropping, ['bottom', 'right'] - crop right bottom corner.
-    quality - quality of resized image 1..100
-    keep_meta - keep EXIF and other meta data, default True
+Options
+-------
 
 
-## How to run tests
+- **size** - max width and height, for example [640, 480]
+- **crop** - resize and crop. ['top', 'left'] - top left corner, ['middle', 'center'] is center cropping, ['bottom', 'right'] - crop right bottom corner.
+- **quality** - quality of resized image 1..100
+- **keep_meta** - keep EXIF and other meta data, default True
+
+
+How to run tests
+================
 
     pip install -r django_resized/testapp/requirements.txt
     ./runtests.py
