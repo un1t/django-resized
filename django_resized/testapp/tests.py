@@ -1,7 +1,7 @@
 # coding: utf-8
-import Image
 import os
 import shutil
+from PIL import Image
 from django.conf import settings
 from django.test import TestCase
 from django.core.files import File
