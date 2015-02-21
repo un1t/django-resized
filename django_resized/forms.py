@@ -1,12 +1,7 @@
 import os
 import sys
+from io import BytesIO
 from PIL import Image, ImageFile, ImageOps
-
-try:
-    from io import BytesIO as StringIO # python3
-except ImportError:
-    from StringIO import StringIO # python2
-
 from django.conf import settings
 from django.core.files.base import ContentFile
 
@@ -24,7 +19,6 @@ DEFAULT_KEEP_META = getattr(settings, 'DJANGORESIZED_DEFAULT_KEEP_META', True)
 class ResizedImageFieldFile(ImageField.attr_class):
 
     def save(self, name, content, save=True):
-        new_content = StringIO()
         content.file.seek(0)
         img = Image.open(content.file)
 
@@ -49,6 +43,7 @@ class ResizedImageFieldFile(ImageField.attr_class):
             thumb = img
 
         ImageFile.MAXBLOCK = max(ImageFile.MAXBLOCK, thumb.size[0] * thumb.size[1])
+        new_content = BytesIO()
         thumb.save(new_content, format=img.format, quality=self.field.quality, **img.info)
         new_content = ContentFile(new_content.getvalue())
 
