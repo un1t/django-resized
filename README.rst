@@ -48,5 +48,4 @@ Options
 How to run tests
 ================
 
-    pip install -r django_resized/testapp/requirements.txt
-    ./runtests.py
+    tox

@@ -12,7 +12,7 @@ from setuptools import setup, find_packages
 
 setup(
     name     = 'django-resized',
-    version  = '0.3.3',
+    version  = '0.3.4',
     packages = ['django_resized'],
     requires = ['python (>= 2.7)', 'django (>= 1.7)'],
     description  = 'Resizes image origin to specified size.',
@@ -28,5 +28,9 @@ setup(
         'Framework :: Django',
         'Intended Audience :: Developers',
         'Programming Language :: Python',
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.4',
     ],
 )
