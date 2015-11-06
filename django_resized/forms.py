@@ -31,7 +31,6 @@ def normalize_rotation(image):
     """ Apply the different possible orientations to the data; preserve format """
     format = image.format
     action_nr = image._getexif()[orientation]
-    #exif = dict(image._getexif().items())
     if action_nr == 3:
         image = image.rotate(180, expand=True)
     elif action_nr == 6:
