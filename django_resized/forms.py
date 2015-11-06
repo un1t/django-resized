@@ -21,14 +21,19 @@ def normalize_rotation(image):
     Find orientation header and rotate the actual data instead.
     Adapted from http://stackoverflow.com/a/6218425/723090
     """
+    try:
+        image._getexif()
+    except AttributeError:
+        """ No exit data; this image is not a jpg and can be skipped. """
+        return image
     for orientation in ExifTags.TAGS.keys():
-        """ Look for orientation header, stop when found """
+        """ Look for orientation header, stop when found. """
         if ExifTags.TAGS[orientation] == 'Orientation':
             break
     else:
-        """ No orientation header found, do nothing """
+        """ No orientation header found, do nothing. """
         return image
-    """ Apply the different possible orientations to the data; preserve format """
+    """ Apply the different possible orientations to the data; preserve format. """
     format = image.format
     action_nr = image._getexif()[orientation]
     if action_nr == 3:
