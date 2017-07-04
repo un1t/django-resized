@@ -12,6 +12,8 @@ Features
 Installation
 ============
 
+::
+
     pip install django-resized
 
 
@@ -50,6 +52,8 @@ Options
 
 How to run tests
 ================
+
+::
 
     pip install tox
     tox
