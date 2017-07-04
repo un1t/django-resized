@@ -26,6 +26,7 @@ def normalize_rotation(image):
     except AttributeError:
         """ No exit data; this image is not a jpg and can be skipped. """
         return image
+
     for orientation in ExifTags.TAGS.keys():
         """ Look for orientation header, stop when found. """
         if ExifTags.TAGS[orientation] == 'Orientation':
@@ -35,7 +36,10 @@ def normalize_rotation(image):
         return image
     """ Apply the different possible orientations to the data; preserve format. """
     format = image.format
-    action_nr = image._getexif()[orientation]
+    exif = image._getexif()
+    if exif is None:
+        return image
+    action_nr = exif[orientation]
     if action_nr == 3:
         image = image.rotate(180, expand=True)
     elif action_nr == 6:
