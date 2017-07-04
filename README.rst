@@ -1,9 +1,12 @@
+.. image:: https://travis-ci.org/un1t/django-resized.svg?branch=master
+    :target: https://travis-ci.org/un1t/django-resized
+
 Resizes image origin to specified size. Compatible with sorl-thumbnail.
 
 Features
 ========
 
-- Support for Django 1.3, 1.4, 1.5, 1.6 and 1.7
+- Tested on Django 1.8, 1.9, 1.10 and 1.11
 - Python 3 support
 
 Installation
@@ -48,4 +51,5 @@ Options
 How to run tests
 ================
 
+    pip install tox
     tox
