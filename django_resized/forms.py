@@ -1,7 +1,7 @@
 import os
 import sys
 from io import BytesIO
-from PIL import Image, ImageFile, ImageOps
+from PIL import Image, ImageFile, ImageOps, ExifTags
 from django.conf import settings
 from django.core.files.base import ContentFile
 
@@ -16,11 +16,43 @@ DEFAULT_QUALITY = getattr(settings, 'DJANGORESIZED_DEFAULT_QUALITY', 0)
 DEFAULT_KEEP_META = getattr(settings, 'DJANGORESIZED_DEFAULT_KEEP_META', True)
 
 
+def normalize_rotation(image):
+    """
+    Find orientation header and rotate the actual data instead.
+    Adapted from http://stackoverflow.com/a/6218425/723090
+    """
+    try:
+        image._getexif()
+    except AttributeError:
+        """ No exit data; this image is not a jpg and can be skipped. """
+        return image
+    for orientation in ExifTags.TAGS.keys():
+        """ Look for orientation header, stop when found. """
+        if ExifTags.TAGS[orientation] == 'Orientation':
+            break
+    else:
+        """ No orientation header found, do nothing. """
+        return image
+    """ Apply the different possible orientations to the data; preserve format. """
+    format = image.format
+    action_nr = image._getexif()[orientation]
+    if action_nr == 3:
+        image = image.rotate(180, expand=True)
+    elif action_nr == 6:
+        image = image.rotate(270, expand=True)
+    elif action_nr == 8:
+        image = image.rotate(90, expand=True)
+    image.format = format
+    return image
+
+
 class ResizedImageFieldFile(ImageField.attr_class):
 
     def save(self, name, content, save=True):
         content.file.seek(0)
         img = Image.open(content.file)
+
+        img = normalize_rotation(img)
 
         if not self.field.keep_meta:
             image_without_exif = Image.new(img.mode, img.size)
