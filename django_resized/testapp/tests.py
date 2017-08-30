@@ -7,6 +7,8 @@ from django.test import TestCase
 from django.core.files import File
 from django.core.files.base import ContentFile
 from PIL import Image
+
+from django_resized import ResizedImageField
 from .models import Product
 
 
@@ -77,3 +79,13 @@ class ResizeTest(TestCase):
         im7 = Image.open(product.image7.path)
         self.assertEquals(im7.size, (604, 453))
 
+
+class ResizeFieldTest(TestCase):
+
+    def test_clone(self):
+        field = ResizedImageField(size=[500, 350], keep_meta=False, crop=['top', 'left'], quality=10)
+        clone = field.clone()
+        self.assertListEqual(clone.size, field.size)
+        self.assertListEqual(clone.crop, field.crop)
+        self.assertEqual(clone.keep_meta, field.keep_meta)
+        self.assertEqual(clone.quality, field.quality)

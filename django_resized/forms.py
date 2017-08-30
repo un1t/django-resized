@@ -120,6 +120,12 @@ class ResizedImageField(ImageField):
         self.keep_meta = kwargs.pop('keep_meta', DEFAULT_KEEP_META)
         super(ResizedImageField, self).__init__(verbose_name, name, **kwargs)
 
+    def deconstruct(self):
+        name, path, args, kwargs = super(ImageField, self).deconstruct()
+        for custom_kwargs in ['crop', 'size', 'quality', 'keep_meta']:
+            kwargs[custom_kwargs] = getattr(self, custom_kwargs)
+        return name, path, args, kwargs
+
 
 try:
     from south.modelsinspector import add_introspection_rules
