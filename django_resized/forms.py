@@ -39,7 +39,10 @@ def normalize_rotation(image):
     exif = image._getexif()
     if exif is None:
         return image
-    action_nr = exif[orientation]
+    action_nr = exif.get(orientation, None)
+    if action_nr is None:
+        """ Empty orientation exif data """
+        return image
     if action_nr == 3:
         image = image.rotate(180, expand=True)
     elif action_nr == 6:
