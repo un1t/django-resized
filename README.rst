@@ -25,6 +25,7 @@ settings.py ::
     DJANGORESIZED_DEFAULT_SIZE = [1920, 1080]
     DJANGORESIZED_DEFAULT_QUALITY = 75
     DJANGORESIZED_DEFAULT_KEEP_META = True
+    DJANGORESIZED_DEFAULT_FORCE_FORMAT = 'JPEG'
 
 Usage
 =====
@@ -39,6 +40,7 @@ models.py ::
         image2 = ResizedImageField(size=[100, 100], crop=['top', 'left'], upload_to='whatever')
         image3 = ResizedImageField(size=[100, 100], crop=['middle', 'center'], upload_to='whatever')
         image4 = ResizedImageField(size=[500, 300], quality=75, upload_to='whatever')
+        image5 = ResizedImageField(size=[500, 300], upload_to='whatever', force_format='PNG')
 
 Options
 -------
@@ -48,6 +50,7 @@ Options
 - **crop** - resize and crop. ['top', 'left'] - top left corner, ['middle', 'center'] is center cropping, ['bottom', 'right'] - crop right bottom corner.
 - **quality** - quality of resized image 1..100
 - **keep_meta** - keep EXIF and other meta data, default True
+- **force_format** - force the format of the resized image, available format are the one supported by `pillow <http://pillow.readthedocs.io/en/3.4.x/handbook/image-file-formats.html>`_, default None
 
 
 How to run tests

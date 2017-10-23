@@ -14,6 +14,7 @@ except ImportError:
 DEFAULT_SIZE = getattr(settings, 'DJANGORESIZED_DEFAULT_SIZE', [1920, 1080])
 DEFAULT_QUALITY = getattr(settings, 'DJANGORESIZED_DEFAULT_QUALITY', 0)
 DEFAULT_KEEP_META = getattr(settings, 'DJANGORESIZED_DEFAULT_KEEP_META', True)
+DEFAULT_FORCE_FORMAT = getattr(settings, 'DJANGORRESIZED_DEFAULT_FORCE_FORMAT', None)
 
 
 def normalize_rotation(image):
@@ -83,10 +84,19 @@ class ResizedImageFieldFile(ImageField.attr_class):
 
         ImageFile.MAXBLOCK = max(ImageFile.MAXBLOCK, thumb.size[0] * thumb.size[1])
         new_content = BytesIO()
-        thumb.save(new_content, format=img.format, quality=self.field.quality, **img.info)
+        img_format = img.format if self.field.force_format is None else self.field.force_format
+        thumb.save(new_content, format=img_format, quality=self.field.quality, **img.info)
         new_content = ContentFile(new_content.getvalue())
 
+        name = self.get_name(name, img_format)
         super(ResizedImageFieldFile, self).save(name, new_content, save)
+
+    def get_name(self, name, format):
+        extensions = Image.registered_extensions()
+        extensions = {v: k for k, v in extensions.items()}
+        if format in extensions:
+            name = name.rsplit('.', 1)[0] + extensions[format]
+        return name
 
     def get_centring(self):
         vertical = {
@@ -121,11 +131,12 @@ class ResizedImageField(ImageField):
         self.crop = kwargs.pop('crop', None)
         self.quality = kwargs.pop('quality', DEFAULT_QUALITY)
         self.keep_meta = kwargs.pop('keep_meta', DEFAULT_KEEP_META)
+        self.force_format = kwargs.pop('force_format', DEFAULT_FORCE_FORMAT)
         super(ResizedImageField, self).__init__(verbose_name, name, **kwargs)
 
     def deconstruct(self):
         name, path, args, kwargs = super(ImageField, self).deconstruct()
-        for custom_kwargs in ['crop', 'size', 'quality', 'keep_meta']:
+        for custom_kwargs in ['crop', 'size', 'quality', 'keep_meta', 'force_format']:
             kwargs[custom_kwargs] = getattr(self, custom_kwargs)
         return name, path, args, kwargs
 

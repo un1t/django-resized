@@ -1,6 +1,11 @@
 Changes
 =======
 
+0.3.8
+-----
+
+- Feature: added force_format.
+
 0.3.7
 -----
 

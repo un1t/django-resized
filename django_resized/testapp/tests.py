@@ -79,6 +79,14 @@ class ResizeTest(TestCase):
         im7 = Image.open(product.image7.path)
         self.assertEquals(im7.size, (604, 453))
 
+    def test_force_format(self):
+        product = Product.objects.create(
+            image_force_png=File(open('media/big.jpg', 'rb')),
+        )
+        image_force_png = Image.open(product.image_force_png.path)
+        self.assertEqual(image_force_png.format, 'PNG')
+        self.assertTrue(image_force_png.filename.endswith('.png'))
+
 
 class ResizeFieldTest(TestCase):
 
