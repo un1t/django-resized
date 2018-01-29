@@ -15,6 +15,7 @@ DEFAULT_SIZE = getattr(settings, 'DJANGORESIZED_DEFAULT_SIZE', [1920, 1080])
 DEFAULT_QUALITY = getattr(settings, 'DJANGORESIZED_DEFAULT_QUALITY', 0)
 DEFAULT_KEEP_META = getattr(settings, 'DJANGORESIZED_DEFAULT_KEEP_META', True)
 DEFAULT_FORCE_FORMAT = getattr(settings, 'DJANGORRESIZED_DEFAULT_FORCE_FORMAT', None)
+DEFAULT_FORMAT_EXTENSIONS = getattr(settings, 'DJANGORRESIZED_FORMAT_EXTENSIONS', {})
 
 
 def normalize_rotation(image):
@@ -94,6 +95,7 @@ class ResizedImageFieldFile(ImageField.attr_class):
     def get_name(self, name, format):
         extensions = Image.registered_extensions()
         extensions = {v: k for k, v in extensions.items()}
+        extensions.update(DEFAULT_FORMAT_EXTENSIONS)
         if format in extensions:
             name = name.rsplit('.', 1)[0] + extensions[format]
         return name
