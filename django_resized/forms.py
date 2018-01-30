@@ -16,6 +16,7 @@ DEFAULT_QUALITY = getattr(settings, 'DJANGORESIZED_DEFAULT_QUALITY', 0)
 DEFAULT_KEEP_META = getattr(settings, 'DJANGORESIZED_DEFAULT_KEEP_META', True)
 DEFAULT_FORCE_FORMAT = getattr(settings, 'DJANGORRESIZED_DEFAULT_FORCE_FORMAT', None)
 DEFAULT_FORMAT_EXTENSIONS = getattr(settings, 'DJANGORRESIZED_FORMAT_EXTENSIONS', {})
+DEFAULT_NORMALIZE_ROTATION = getattr(settings, 'DJANGORRESIZED_NORMALIZE_ROTATION', True)
 
 
 def normalize_rotation(image):
@@ -61,7 +62,8 @@ class ResizedImageFieldFile(ImageField.attr_class):
         content.file.seek(0)
         img = Image.open(content.file)
 
-        img = normalize_rotation(img)
+        if DEFAULT_NORMALIZE_ROTATION:
+            img = normalize_rotation(img)
 
         if not self.field.keep_meta:
             image_without_exif = Image.new(img.mode, img.size)
