@@ -14,7 +14,9 @@ except ImportError:
 DEFAULT_SIZE = getattr(settings, 'DJANGORESIZED_DEFAULT_SIZE', [1920, 1080])
 DEFAULT_QUALITY = getattr(settings, 'DJANGORESIZED_DEFAULT_QUALITY', 0)
 DEFAULT_KEEP_META = getattr(settings, 'DJANGORESIZED_DEFAULT_KEEP_META', True)
-DEFAULT_FORCE_FORMAT = getattr(settings, 'DJANGORRESIZED_DEFAULT_FORCE_FORMAT', None)
+DEFAULT_FORCE_FORMAT = getattr(settings, 'DJANGORESIZED_DEFAULT_FORCE_FORMAT', None)
+DEFAULT_FORMAT_EXTENSIONS = getattr(settings, 'DJANGORESIZED_DEFAULT_FORMAT_EXTENSIONS', {})
+DEFAULT_NORMALIZE_ROTATION = getattr(settings, 'DJANGORESIZED_DEFAULT_NORMALIZE_ROTATION', True)
 
 
 def normalize_rotation(image):
@@ -60,7 +62,8 @@ class ResizedImageFieldFile(ImageField.attr_class):
         content.file.seek(0)
         img = Image.open(content.file)
 
-        img = normalize_rotation(img)
+        if DEFAULT_NORMALIZE_ROTATION:
+            img = normalize_rotation(img)
 
         if not self.field.keep_meta:
             image_without_exif = Image.new(img.mode, img.size)
@@ -94,6 +97,7 @@ class ResizedImageFieldFile(ImageField.attr_class):
     def get_name(self, name, format):
         extensions = Image.registered_extensions()
         extensions = {v: k for k, v in extensions.items()}
+        extensions.update(DEFAULT_FORMAT_EXTENSIONS)
         if format in extensions:
             name = name.rsplit('.', 1)[0] + extensions[format]
         return name
