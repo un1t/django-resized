@@ -12,7 +12,7 @@ Features
 Installation
 ============
 
-::
+.. code-block:: bash
 
     pip install django-resized
 
@@ -20,7 +20,9 @@ Installation
 Configuration (optional)
 ========================
 
-settings.py ::
+settings.py
+
+.. code-block:: python
 
     DJANGORESIZED_DEFAULT_SIZE = [1920, 1080]
     DJANGORESIZED_DEFAULT_QUALITY = 75
@@ -33,7 +35,9 @@ settings.py ::
 Usage
 =====
 
-models.py ::
+models.py
+
+.. code-block:: python
 
     from django_resized import ResizedImageField
 
@@ -59,7 +63,7 @@ Options
 How to run tests
 ================
 
-::
+.. code-block:: bash
 
     pip install tox
     tox
