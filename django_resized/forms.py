@@ -81,7 +81,7 @@ class ResizedImageFieldFile(ImageField.attr_class):
 
         img_info = img.info
         if not self.field.keep_meta:
-            img_info.pop('exif')
+            img_info.pop('exif', None)
 
         ImageFile.MAXBLOCK = max(ImageFile.MAXBLOCK, thumb.size[0] * thumb.size[1])
         new_content = BytesIO()
