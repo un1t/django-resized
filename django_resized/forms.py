@@ -65,12 +65,6 @@ class ResizedImageFieldFile(ImageField.attr_class):
         if DEFAULT_NORMALIZE_ROTATION:
             img = normalize_rotation(img)
 
-        if not self.field.keep_meta:
-            image_without_exif = Image.new(img.mode, img.size)
-            image_without_exif.putdata(img.getdata())
-            image_without_exif.format = img.format
-            img = image_without_exif
-
         if self.field.crop:
             thumb = ImageOps.fit(
                 img,
@@ -84,6 +78,12 @@ class ResizedImageFieldFile(ImageField.attr_class):
                 Image.ANTIALIAS,
             )
             thumb = img
+
+        if not self.field.keep_meta:
+            thumb_without_exif = Image.new(thumb.mode, thumb.size)
+            thumb_without_exif.putdata(thumb.getdata())
+            thumb_without_exif.format = thumb.format
+            thumb = thumb_without_exif
 
         ImageFile.MAXBLOCK = max(ImageFile.MAXBLOCK, thumb.size[0] * thumb.size[1])
         new_content = BytesIO()
