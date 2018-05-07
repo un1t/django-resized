@@ -79,16 +79,14 @@ class ResizedImageFieldFile(ImageField.attr_class):
             )
             thumb = img
 
+        img_info = img.info
         if not self.field.keep_meta:
-            thumb_without_exif = Image.new(thumb.mode, thumb.size)
-            thumb_without_exif.putdata(thumb.getdata())
-            thumb_without_exif.format = thumb.format
-            thumb = thumb_without_exif
+            img_info.pop('exif')
 
         ImageFile.MAXBLOCK = max(ImageFile.MAXBLOCK, thumb.size[0] * thumb.size[1])
         new_content = BytesIO()
         img_format = img.format if self.field.force_format is None else self.field.force_format
-        thumb.save(new_content, format=img_format, quality=self.field.quality, **img.info)
+        thumb.save(new_content, format=img_format, quality=self.field.quality, **img_info)
         new_content = ContentFile(new_content.getvalue())
 
         name = self.get_name(name, img_format)
