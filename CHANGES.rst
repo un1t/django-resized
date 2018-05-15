@@ -1,6 +1,11 @@
 Changes
 =======
 
+0.3.10
+------
+
+- Improvement: Remove EXIF information without creating new image
+
 0.3.9
 -----
 
