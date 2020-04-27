@@ -1,15 +1,11 @@
 Changes
 =======
 
-0.3.11
-------
-
-- Convert GIF to JPG #19
-
 0.3.10
 ------
 
 - Improvement: Remove EXIF information without creating new image
+- Convert GIF to JPG #19
 
 0.3.9
 -----
