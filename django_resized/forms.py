@@ -65,7 +65,7 @@ class ResizedImageFieldFile(ImageField.attr_class):
         if DEFAULT_NORMALIZE_ROTATION:
             img = normalize_rotation(img)
 
-        if self.field.force_format.lower() in ('jpeg', 'jpg') and img.mode != 'RGB':
+        if self.field.force_format and self.field.force_format.lower() in ('jpeg', 'jpg') and img.mode != 'RGB':
             img = img.convert('RGB')
 
         if self.field.crop:
