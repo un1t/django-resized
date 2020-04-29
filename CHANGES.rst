@@ -1,6 +1,11 @@
 Changes
 =======
 
+0.3.11
+------
+
+- Check force_format exists before checking value
+
 0.3.10
 ------
 
