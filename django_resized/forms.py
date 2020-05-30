@@ -46,12 +46,14 @@ def normalize_rotation(image):
     if action_nr is None:
         """ Empty orientation exif data """
         return image
-    if action_nr == 3:
+    if action_nr in (3, 4):
         image = image.rotate(180, expand=True)
-    elif action_nr == 6:
+    elif action_nr in (5, 6):
         image = image.rotate(270, expand=True)
-    elif action_nr == 8:
+    elif action_nr in (7, 8):
         image = image.rotate(90, expand=True)
+    if action_nr in (2, 4, 5, 7):
+        image = ImageOps.mirror(image)
     image.format = format
     return image
 
