@@ -1,6 +1,11 @@
 Changes
 =======
 
+0.3.12
+------
+
+- Add support for mirrored orientations #29
+
 0.3.11
 ------
 
