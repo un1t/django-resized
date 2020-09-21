@@ -1,4 +1,3 @@
-import os
 import sys
 from io import BytesIO
 from PIL import Image, ImageFile, ImageOps, ExifTags
@@ -100,6 +99,9 @@ class ResizedImageFieldFile(ImageField.attr_class):
     def get_name(self, name, format):
         extensions = Image.registered_extensions()
         extensions = {v: k for k, v in extensions.items()}
+        extensions.update({
+            "PNG": ".png",  # It uses .apng otherwise
+        })
         extensions.update(DEFAULT_FORMAT_EXTENSIONS)
         if format in extensions:
             name = name.rsplit('.', 1)[0] + extensions[format]
@@ -146,19 +148,3 @@ class ResizedImageField(ImageField):
         for custom_kwargs in ['crop', 'size', 'quality', 'keep_meta', 'force_format']:
             kwargs[custom_kwargs] = getattr(self, custom_kwargs)
         return name, path, args, kwargs
-
-
-try:
-    from south.modelsinspector import add_introspection_rules
-except ImportError:
-    pass
-else:
-    rules = [
-        (
-            (ResizedImageField,),
-            [],
-            {
-            },
-        )
-    ]
-    add_introspection_rules(rules, ["^django_resized\.forms\.ResizedImageField"])

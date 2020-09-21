@@ -1,9 +1,11 @@
 Changes
 =======
 
-0.3.12
-------
+0.3.12 (unreleased)
+-------------------
 
+- Remove official support for Django < 1.11 and python 2 (it may still works but is untested)
+- Added support for Django up to 3.1
 - Add support for mirrored orientations #29
 
 0.3.11

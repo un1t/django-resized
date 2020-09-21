@@ -2,11 +2,10 @@
 import os
 import shutil
 from PIL import Image
+
 from django.conf import settings
 from django.test import TestCase
 from django.core.files import File
-from django.core.files.base import ContentFile
-from PIL import Image
 
 from django_resized import ResizedImageField
 from .models import Product
@@ -24,7 +23,7 @@ class ResizeTest(TestCase):
             image1=File(open('media/big.jpg', 'rb')),
         )
         im1 = Image.open(product.image1.path)
-        self.assertEquals(im1.size, (466, 350))
+        self.assertEquals(im1.size, (467, 350))
 
     def test_resizes_settings_default(self):
         product = Product.objects.create(
@@ -40,7 +39,6 @@ class ResizeTest(TestCase):
         im3 = Image.open(product.image3.path)
         self.assertEquals(im3.size, (40, 40))
 
-
     def test_resize_crop_right(self):
         product = Product.objects.create(
             image4=File(open('media/big.jpg', 'rb')),
@@ -53,20 +51,18 @@ class ResizeTest(TestCase):
             image1=File(open('media/big.jpg', 'rb')),
             image5=File(open('media/big.jpg', 'rb')),
         )
-        self.assertTrue(os.path.getsize(product.image1.path) > os.path.getsize(product.image5.path))
+        self.assertTrue(os.path.getsize(product.image1.path) < os.path.getsize(product.image5.path))
 
     def test_keep_exif(self):
         product = Product.objects.create(
             image1=File(open('media/exif.jpg', 'rb')),
         )
-        im1 = Image.open(product.image1.path)
         self.assertTrue(self.has_exif(product.image1.path))
 
     def test_remove_exif(self):
         product = Product.objects.create(
             image6=File(open('media/exif.jpg', 'rb')),
         )
-        im6 = Image.open(product.image6.path)
         self.assertFalse(self.has_exif(product.image6.path))
 
     def has_exif(self, filename):

@@ -4,6 +4,7 @@ from django_resized import ResizedImageField
 
 UPLOAD_TO = 'testapp'
 
+
 class Product(models.Model):
     image1 = ResizedImageField(size=[500, 350], upload_to=UPLOAD_TO, blank=True)
     image2 = ResizedImageField(upload_to=UPLOAD_TO)
