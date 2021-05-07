@@ -51,7 +51,7 @@ class ResizeTest(TestCase):
             image1=File(open('media/big.jpg', 'rb')),
             image5=File(open('media/big.jpg', 'rb')),
         )
-        self.assertTrue(os.path.getsize(product.image1.path) < os.path.getsize(product.image5.path))
+        self.assertTrue(os.path.getsize(product.image1.path) > os.path.getsize(product.image5.path))
 
     def test_keep_exif(self):
         product = Product.objects.create(
