@@ -66,9 +66,12 @@ class ResizedImageFieldFile(ImageField.attr_class):
         if DEFAULT_NORMALIZE_ROTATION:
             img = normalize_rotation(img)
 
-        rgb_formats = ('jpeg', 'jpg', 'png')
+        rgb_formats = ('jpeg', 'jpg')
+        rgba_formats = ('png')
         if self.field.force_format and self.field.force_format.lower() in rgb_formats and img.mode != 'RGB':
             img = img.convert('RGB')
+        if self.field.force_format and self.field.force_format.lower() in rgba_formats and img.mode != 'RGBA':
+            img = img.convert('RGBA')
 
         if self.field.crop:
             thumb = ImageOps.fit(
