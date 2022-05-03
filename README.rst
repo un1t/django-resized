@@ -1,12 +1,11 @@
-.. image:: https://travis-ci.org/un1t/django-resized.svg?branch=master
-    :target: https://travis-ci.org/un1t/django-resized
+.. image:: https://github.com/un1t/django-resized/actions/workflows/python-app.yml/badge.svg
 
 Resizes image origin to specified size. Compatible with sorl-thumbnail.
 
 Features
 ========
 
-- Tested on Django 1.11, 2.0, 2.1, 2.2, 3.0, 3.1, 3.2
+- Tested on Django 2.2, 3.0, 3.1, 3.2, 4.0
 - Python 3 support
 
 Installation

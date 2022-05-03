@@ -8,8 +8,8 @@ Changes
 - Added support for Django up to 3.1
 - Add support for mirrored orientations #29
 - Fix JPEG default quality (fixes #34) #35
-- Add 'png' to the formats that need the img mode to be RGBA #39 #41 
-
+- Add 'png' to the formats that need the img mode to be RGBA #39 #41
+- Use Image.Resampling.LANCZOS instead of deprecated Image.ANTIALIAS
 
 0.3.11
 ------

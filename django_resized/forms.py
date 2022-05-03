@@ -73,17 +73,22 @@ class ResizedImageFieldFile(ImageField.attr_class):
         if self.field.force_format and self.field.force_format.lower() in rgba_formats and img.mode != 'RGBA':
             img = img.convert('RGBA')
 
+        try:
+            # Replace ANTIALIAS in PIL 9
+            resample = Image.Resampling.LANCZOS
+        except AttributeError:
+            resample = Image.ANTIALIAS
         if self.field.crop:
             thumb = ImageOps.fit(
                 img,
                 self.field.size,
-                Image.ANTIALIAS,
+                resample,
                 centering=self.get_centring()
             )
         else:
             img.thumbnail(
                 self.field.size,
-                Image.ANTIALIAS,
+                resample,
             )
             thumb = img
 

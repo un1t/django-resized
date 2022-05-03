@@ -1,3 +1,0 @@
-pillow
-django-nose
-pinocchio

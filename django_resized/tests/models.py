@@ -2,7 +2,7 @@
 from django.db import models
 from django_resized import ResizedImageField
 
-UPLOAD_TO = 'testapp'
+UPLOAD_TO = 'tests'
 
 
 class Product(models.Model):

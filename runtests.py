@@ -14,19 +14,12 @@ settings.configure(
         },
     },
     INSTALLED_APPS = (
-        'django_resized.testapp',
+        'django_resized.tests',
         'django_resized',
     ),
     MIDDLEWARE_CLASSES = [],
     DJANGORESIZED_DEFAULT_SIZE = [400, 300],
     MEDIA_ROOT = os.path.join(BASE_DIR, 'media'),
-    TEST_RUNNER = 'django_nose.NoseTestSuiteRunner',
-    NOSE_ARGS = [
-        '--with-spec',
-        '--spec-color',
-        '--verbosity=2',
-        '--nocapture',
-    ],
 )
 
 if __name__ == "__main__":
