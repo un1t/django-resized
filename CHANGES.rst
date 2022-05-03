@@ -1,11 +1,11 @@
 Changes
 =======
 
-0.3.12 (unreleased)
+1.0.0 (2022-05-03)
 -------------------
 
-- Remove official support for Django < 1.11 and python 2 (it may still works but is untested)
-- Added support for Django up to 3.1
+- Remove official support for Django < 2.2 and python 2 (it may still works but is untested)
+- Added support for Django up to 4.0
 - Add support for mirrored orientations #29
 - Fix JPEG default quality (fixes #34) #35
 - Add 'png' to the formats that need the img mode to be RGBA #39 #41
