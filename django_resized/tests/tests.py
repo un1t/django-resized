@@ -74,6 +74,21 @@ class ResizeTest(TestCase):
         )
         im7 = Image.open(product.image7.path)
         self.assertEqual(im7.size, (604, 453))
+    
+    def test_scale_set_size(self):
+        product = Product.objects.create(
+            image8=File(open('media/big.jpg', 'rb')),
+        )
+        im8 = Image.open(product.image8.path)
+        self.assertEqual(im8.size, (200, 200))
+
+    def test_scale_default_size(self):
+        product = Product.objects.create(
+            image9=File(open('media/big.jpg', 'rb')),
+        )
+        im9 = Image.open(product.image9.path)
+        self.assertEqual(im9.size, (302, 226))
+
 
     def test_force_format(self):
         product = Product.objects.create(
