@@ -96,6 +96,10 @@ class ResizedImageFieldFile(ImageField.attr_class):
             )
             thumb = img
         else:
+            if self.field.size[0] == None:
+                self.field.scale = self.field.size[1] / img.size[1] 
+            elif self.field.size[1] == None:
+                self.field.scale = self.field.size[0] / img.size[0] 
             thumb = img
 
         if self.field.scale != 1.0:
