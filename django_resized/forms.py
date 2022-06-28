@@ -1,4 +1,3 @@
-from curses import use_default_colors
 import sys
 from io import BytesIO
 from PIL import Image, ImageFile, ImageOps, ExifTags
