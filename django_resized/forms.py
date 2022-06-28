@@ -13,7 +13,6 @@ except ImportError:
 
 DEFAULT_SIZE = getattr(settings, 'DJANGORESIZED_DEFAULT_SIZE', [1920, 1080])
 DEFAULT_SCALE = getattr(settings, 'DJANGORESIZED_DEFAULT_SCALE', 1.0)
-DEFAULT_USE_DEFAULT_SIZE = getattr(settings, 'DJANGORESIZED_USE_DEFAULT_SIZE', False)
 DEFAULT_QUALITY = getattr(settings, 'DJANGORESIZED_DEFAULT_QUALITY', -1)
 DEFAULT_KEEP_META = getattr(settings, 'DJANGORESIZED_DEFAULT_KEEP_META', True)
 DEFAULT_FORCE_FORMAT = getattr(settings, 'DJANGORESIZED_DEFAULT_FORCE_FORMAT', None)
@@ -89,17 +88,17 @@ class ResizedImageFieldFile(ImageField.attr_class):
                 resample,
                 centering=self.get_centring()
             )
-        elif not self.field.use_default_size:
+        elif None in self.field.size:
+            thumb = img
+            if self.field.size[0] is None and self.field.size[1] is not None:
+                self.field.scale = self.field.size[1] / img.size[1]
+            elif self.field.size[1] is None and self.field.size[0] is not None:
+                self.field.scale = self.field.size[0] / img.size[0]
+        else:
             img.thumbnail(
                 self.field.size,
                 resample,
             )
-            thumb = img
-        else:
-            if self.field.size[0] == None:
-                self.field.scale = self.field.size[1] / img.size[1] 
-            elif self.field.size[1] == None:
-                self.field.scale = self.field.size[0] / img.size[0] 
             thumb = img
 
         if self.field.scale != 1.0:
@@ -164,7 +163,6 @@ class ResizedImageField(ImageField):
 
         self.size = kwargs.pop('size', DEFAULT_SIZE)
         self.scale = kwargs.pop('scale', DEFAULT_SCALE)
-        self.use_default_size = kwargs.pop('use_default_size', DEFAULT_USE_DEFAULT_SIZE)
         self.crop = kwargs.pop('crop', None)
         self.quality = kwargs.pop('quality', DEFAULT_QUALITY)
         self.keep_meta = kwargs.pop('keep_meta', DEFAULT_KEEP_META)
@@ -173,6 +171,6 @@ class ResizedImageField(ImageField):
 
     def deconstruct(self):
         name, path, args, kwargs = super(ImageField, self).deconstruct()
-        for custom_kwargs in ['crop', 'size', 'scale', 'use_default_size', 'quality', 'keep_meta', 'force_format']:
+        for custom_kwargs in ['crop', 'size', 'scale', 'quality', 'keep_meta', 'force_format']:
             kwargs[custom_kwargs] = getattr(self, custom_kwargs)
         return name, path, args, kwargs
