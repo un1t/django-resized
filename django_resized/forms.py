@@ -11,6 +11,7 @@ except ImportError:
 
 
 DEFAULT_SIZE = getattr(settings, 'DJANGORESIZED_DEFAULT_SIZE', [1920, 1080])
+DEFAULT_SCALE = getattr(settings, 'DJANGORESIZED_DEFAULT_SCALE', None)
 DEFAULT_QUALITY = getattr(settings, 'DJANGORESIZED_DEFAULT_QUALITY', -1)
 DEFAULT_KEEP_META = getattr(settings, 'DJANGORESIZED_DEFAULT_KEEP_META', True)
 DEFAULT_FORCE_FORMAT = getattr(settings, 'DJANGORESIZED_DEFAULT_FORCE_FORMAT', None)
@@ -78,6 +79,10 @@ class ResizedImageFieldFile(ImageField.attr_class):
             resample = Image.Resampling.LANCZOS
         except AttributeError:
             resample = Image.ANTIALIAS
+
+        if self.field.size is None:
+            self.field.size = img.size
+
         if self.field.crop:
             thumb = ImageOps.fit(
                 img,
@@ -85,12 +90,25 @@ class ResizedImageFieldFile(ImageField.attr_class):
                 resample,
                 centering=self.get_centring()
             )
+        elif None in self.field.size:
+            thumb = img
+            if self.field.size[0] is None and self.field.size[1] is not None:
+                self.field.scale = self.field.size[1] / img.size[1]
+            elif self.field.size[1] is None and self.field.size[0] is not None:
+                self.field.scale = self.field.size[0] / img.size[0]
         else:
             img.thumbnail(
                 self.field.size,
                 resample,
             )
             thumb = img
+
+        if self.field.scale is not None:
+            thumb = ImageOps.scale(
+                thumb,
+                self.field.scale,
+                resample
+            )
 
         img_info = img.info
         if not self.field.keep_meta:
@@ -146,6 +164,7 @@ class ResizedImageField(ImageField):
                 del kwargs[argname]
 
         self.size = kwargs.pop('size', DEFAULT_SIZE)
+        self.scale = kwargs.pop('scale', DEFAULT_SCALE)
         self.crop = kwargs.pop('crop', None)
         self.quality = kwargs.pop('quality', DEFAULT_QUALITY)
         self.keep_meta = kwargs.pop('keep_meta', DEFAULT_KEEP_META)
@@ -154,6 +173,6 @@ class ResizedImageField(ImageField):
 
     def deconstruct(self):
         name, path, args, kwargs = super(ImageField, self).deconstruct()
-        for custom_kwargs in ['crop', 'size', 'quality', 'keep_meta', 'force_format']:
+        for custom_kwargs in ['crop', 'size', 'scale', 'quality', 'keep_meta', 'force_format']:
             kwargs[custom_kwargs] = getattr(self, custom_kwargs)
         return name, path, args, kwargs
