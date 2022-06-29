@@ -1,10 +1,11 @@
 Changes
 =======
 
-1.0.1 (unreleased)
+1.0.1 (2022-06-29)
 -------------------
 
--
+- Implement scale up and down support #42
+- Add support to maintain image ratio #23
 
 1.0.0 (2022-05-03)
 -------------------
