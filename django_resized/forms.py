@@ -11,7 +11,7 @@ except ImportError:
 
 
 DEFAULT_SIZE = getattr(settings, 'DJANGORESIZED_DEFAULT_SIZE', [1920, 1080])
-DEFAULT_SCALE = getattr(settings, 'DJANGORESIZED_DEFAULT_SCALE', 1.0)
+DEFAULT_SCALE = getattr(settings, 'DJANGORESIZED_DEFAULT_SCALE', None)
 DEFAULT_QUALITY = getattr(settings, 'DJANGORESIZED_DEFAULT_QUALITY', -1)
 DEFAULT_KEEP_META = getattr(settings, 'DJANGORESIZED_DEFAULT_KEEP_META', True)
 DEFAULT_FORCE_FORMAT = getattr(settings, 'DJANGORESIZED_DEFAULT_FORCE_FORMAT', None)
@@ -80,6 +80,9 @@ class ResizedImageFieldFile(ImageField.attr_class):
         except AttributeError:
             resample = Image.ANTIALIAS
 
+        if self.field.size is None:
+            self.field.size = img.size
+
         if self.field.crop:
             thumb = ImageOps.fit(
                 img,
@@ -100,7 +103,7 @@ class ResizedImageFieldFile(ImageField.attr_class):
             )
             thumb = img
 
-        if self.field.scale != 1.0:
+        if self.field.scale is not None:
             thumb = ImageOps.scale(
                 thumb,
                 self.field.scale,

@@ -17,4 +17,5 @@ class Product(models.Model):
     image9 = ResizedImageField(size=[None, None], scale=0.5, upload_to=UPLOAD_TO, blank=True)
     image10 = ResizedImageField(size=[500, None], upload_to=UPLOAD_TO, blank=True)
     image11 = ResizedImageField(size=[None, 350], upload_to=UPLOAD_TO, blank=True)
+    image12 = ResizedImageField(size=None, scale=0.5, upload_to=UPLOAD_TO, blank=True)
     image_force_png = ResizedImageField(size=[500, 350], upload_to=UPLOAD_TO, blank=True, force_format='PNG')
