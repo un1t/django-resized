@@ -46,9 +46,10 @@ models.py
         ...
         image1 = ResizedImageField(size=[500, 300], upload_to='whatever')
         image2 = ResizedImageField(size=[100, 100], crop=['top', 'left'], upload_to='whatever')
-        image3 = ResizedImageField(size=[100, None], crop=['middle', 'center'], upload_to='whatever')
+        image3 = ResizedImageField(size=[100, 150], crop=['middle', 'center'], upload_to='whatever')
         image4 = ResizedImageField(scale=0.5, quality=75, upload_to='whatever')
         image5 = ResizedImageField(size=None, upload_to='whatever', force_format='PNG')
+        image6 = ResizedImageField(size=[100, None], upload_to='whatever')
 
 Options
 -------

@@ -2,6 +2,7 @@ import sys
 from io import BytesIO
 from PIL import Image, ImageFile, ImageOps, ExifTags
 from django.conf import settings
+from django.core import checks
 from django.core.files.base import ContentFile
 
 try:
@@ -176,3 +177,24 @@ class ResizedImageField(ImageField):
         for custom_kwargs in ['crop', 'size', 'scale', 'quality', 'keep_meta', 'force_format']:
             kwargs[custom_kwargs] = getattr(self, custom_kwargs)
         return name, path, args, kwargs
+
+    def check(self, **kwargs):
+        return [
+            *super().check(**kwargs),
+            *self._check_single_dimension_crop(),
+        ]
+
+    def _check_single_dimension_crop(self):
+        if self.crop is not None and self.size is not None and None in self.size:
+            return [
+                checks.Error(
+                    f"{self.__class__.__name__} has both a crop argument and a single dimension size. "
+                    "Crop is not possible in that case as the second size dimension is computed from the "
+                    "image size and the image will never be cropped.",
+                    obj=self,
+                    id='django_resized.E100',
+                    hint='Remove the crop argument.',
+                )
+            ]
+        else:
+            return []

@@ -4,6 +4,7 @@ import shutil
 from PIL import Image
 
 from django.conf import settings
+from django.core import checks
 from django.test import TestCase
 from django.core.files import File
 
@@ -117,6 +118,12 @@ class ResizeTest(TestCase):
         image_force_png = Image.open(product.image_force_png.path)
         self.assertEqual(image_force_png.format, 'PNG')
         self.assertTrue(image_force_png.filename.endswith('.png'))
+
+    def test_crop_single_size_dimension(self):
+        self.assertIsInstance(
+            ResizedImageField(size=[None, 350], crop=['top', 'right'], blank=True, name='foo').check()[0],
+            checks.Error
+        )
 
 
 class ResizeFieldTest(TestCase):
