@@ -182,6 +182,7 @@ class ResizedImageField(ImageField):
         return [
             *super().check(**kwargs),
             *self._check_single_dimension_crop(),
+            *self._check_webp_quality(),
         ]
 
     def _check_single_dimension_crop(self):
@@ -194,6 +195,23 @@ class ResizedImageField(ImageField):
                     obj=self,
                     id='django_resized.E100',
                     hint='Remove the crop argument.',
+                )
+            ]
+        else:
+            return []
+
+    def _check_webp_quality(self):
+        if (
+                self.force_format is not None
+                and self.force_format.lower() == 'webp'
+                and (self.quality is None or self.quality == -1)
+        ):
+            return [
+                checks.Error(
+                    f"{self.__class__.__name__} forces the webp format without the quality set.",
+                    obj=self,
+                    id='django_resized.E101',
+                    hint='Set the quality argument.',
                 )
             ]
         else:

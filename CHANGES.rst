@@ -4,7 +4,8 @@ Changes
 1.0.2 (unreleased)
 -------------------
 
--
+- Add an error check for crop with single size dimension #43
+- Add an error check for webp conversion without quality set #45
 
 1.0.1 (2022-06-29)
 -------------------

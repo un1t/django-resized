@@ -119,6 +119,12 @@ class ResizeTest(TestCase):
         self.assertEqual(image_force_png.format, 'PNG')
         self.assertTrue(image_force_png.filename.endswith('.png'))
 
+    def test_force_webp_without_quality(self):
+        self.assertIsInstance(
+            ResizedImageField(force_format='WEBP', name='foo').check()[0],
+            checks.Error
+        )
+
     def test_crop_single_size_dimension(self):
         self.assertIsInstance(
             ResizedImageField(size=[None, 350], crop=['top', 'right'], blank=True, name='foo').check()[0],
