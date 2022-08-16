@@ -202,9 +202,9 @@ class ResizedImageField(ImageField):
 
     def _check_webp_quality(self):
         if (
-                self.force_format is not None
-                and self.force_format.lower() == 'webp'
-                and (self.quality is None or self.quality == -1)
+            self.force_format is not None and
+            self.force_format.lower() == 'webp' and
+            (self.quality is None or self.quality == -1)
         ):
             return [
                 checks.Error(
