@@ -131,6 +131,14 @@ class ResizeTest(TestCase):
             checks.Error
         )
 
+    def test_resize_png(self):
+        product = Product.objects.create(
+            image2=File(open('media/small.png', 'rb')),
+        )
+        im2 = Image.open(product.image2.path)
+        self.assertEqual(im2.size, (50, 50))
+        self.assertEqual(im2.format, 'PNG')
+
 
 class ResizeFieldTest(TestCase):
 
