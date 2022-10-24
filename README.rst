@@ -1,7 +1,7 @@
 .. image:: https://github.com/un1t/django-resized/actions/workflows/python-app.yml/badge.svg
     :target: https://github.com/un1t/django-resized/actions/workflows/python-app.yml
 
-Resizes image origin to specified size. Compatible with sorl-thumbnail.
+Resizes image origin to specified size. Compatible with sorl-thumbnail. Inherits from ImageField.
 
 Features
 ========
