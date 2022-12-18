@@ -60,7 +60,7 @@ Options
 - **crop** - resize and crop. ['top', 'left'] - top left corner, ['middle', 'center'] is center cropping, ['bottom', 'right'] - crop right bottom corner.
 - **quality** - quality of resized image 0..100, -1 means default
 - **keep_meta** - keep EXIF and other meta data, default True
-- **force_format** - force the format of the resized image, available formats are the one supported by `pillow <http://pillow.readthedocs.io/en/3.4.x/handbook/image-file-formats.html>`_, default to None
+- **force_format** - force the format of the resized image, available formats are the one supported by `pillow <https://pillow.readthedocs.io/en/stable/handbook/image-file-formats.html#image-file-formats>`_, default to None
 
 
 How to run tests
