@@ -1,4 +1,4 @@
-import sys
+import warnings
 from io import BytesIO
 from PIL import Image, ImageFile, ImageOps, ExifTags
 from django.conf import settings
@@ -28,24 +28,24 @@ def normalize_rotation(image):
     try:
         image._getexif()
     except AttributeError:
-        """ No exit data; this image is not a jpg and can be skipped. """
+        # No exit data; this image is not a jpg and can be skipped
         return image
 
     for orientation in ExifTags.TAGS.keys():
-        """ Look for orientation header, stop when found. """
+        # Look for orientation header, stop when found
         if ExifTags.TAGS[orientation] == 'Orientation':
             break
     else:
-        """ No orientation header found, do nothing. """
+        # No orientation header found, do nothing
         return image
-    """ Apply the different possible orientations to the data; preserve format. """
+    # Apply the different possible orientations to the data; preserve format
     format = image.format
     exif = image._getexif()
     if exif is None:
         return image
     action_nr = exif.get(orientation, None)
     if action_nr is None:
-        """ Empty orientation exif data """
+        # Empty orientation exif data
         return image
     if action_nr in (3, 4):
         image = image.rotate(180, expand=True)
@@ -122,7 +122,7 @@ class ResizedImageFieldFile(ImageField.attr_class):
         new_content = ContentFile(new_content.getvalue())
 
         name = self.get_name(name, img_format)
-        super(ResizedImageFieldFile, self).save(name, new_content, save)
+        super().save(name, new_content, save)
 
     def get_name(self, name, format):
         extensions = Image.registered_extensions()
@@ -158,10 +158,13 @@ class ResizedImageField(ImageField):
 
     def __init__(self, verbose_name=None, name=None, **kwargs):
         # migrate from 0.2.x
-        depricated = ('max_width', 'max_height', 'use_thumbnail_aspect_ratio', 'background_color')
-        for argname in depricated:
+        for argname in ('max_width', 'max_height', 'use_thumbnail_aspect_ratio', 'background_color'):
             if argname in kwargs:
-                sys.stderr.write('Error: Keyword argument %s is deprecated for ResizedImageField, see README https://github.com/un1t/django-resized\n' % argname)
+                warnings.warn(
+                    f'Error: Keyword argument {argname} is deprecated for ResizedImageField, '
+                    'see README https://github.com/un1t/django-resized',
+                    DeprecationWarning,
+                )
                 del kwargs[argname]
 
         self.size = kwargs.pop('size', DEFAULT_SIZE)
@@ -170,11 +173,11 @@ class ResizedImageField(ImageField):
         self.quality = kwargs.pop('quality', DEFAULT_QUALITY)
         self.keep_meta = kwargs.pop('keep_meta', DEFAULT_KEEP_META)
         self.force_format = kwargs.pop('force_format', DEFAULT_FORCE_FORMAT)
-        super(ResizedImageField, self).__init__(verbose_name, name, **kwargs)
+        super().__init__(verbose_name, name, **kwargs)
 
     def deconstruct(self):
-        name, path, args, kwargs = super(ImageField, self).deconstruct()
-        for custom_kwargs in ['crop', 'size', 'scale', 'quality', 'keep_meta', 'force_format']:
+        name, path, args, kwargs = super().deconstruct()
+        for custom_kwargs in ('crop', 'size', 'scale', 'quality', 'keep_meta', 'force_format'):
             kwargs[custom_kwargs] = getattr(self, custom_kwargs)
         return name, path, args, kwargs
 
