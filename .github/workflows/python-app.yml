@@ -11,8 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        django_version: [ '3.2', '4.0', '4.1' ]
-        python_version: [ '3.7', '3.8', '3.9', '3.10' ]
+        django_version: [ '3.2', '4.0', '4.1', '4.2' ]
+        python_version: [ '3.7', '3.8', '3.9', '3.10', '3.11', '3.12' ]
         exclude:
 
           - django_version: '4.0'
@@ -20,17 +20,26 @@ jobs:
 
           - django_version: '4.1'
             python_version: '3.7'
+
+          - django_version: '4.2'
+            python_version: '3.7'
+
+          - django_version: '3.2'
+            python_version: '3.12'
+
+          - django_version: '3.2'
+            python_version: '3.11'
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Set up Python ${{ matrix.python_version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python_version }}
     - name: Cache pip
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         # This path is specific to Ubuntu
         path: ~/.cache/pip

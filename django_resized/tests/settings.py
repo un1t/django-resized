@@ -1,6 +1,6 @@
-import os
+from pathlib import Path
 
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+BASE_DIR = Path(__file__).parent.parent
 
 SECRET_KEY = 'secret'
 
@@ -37,7 +37,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.admin',
     'django.contrib.messages',
-    'django_resized',
+    'django_resized.tests',
 )
 
 TEMPLATES = [
@@ -64,4 +64,4 @@ USE_TZ = False
 
 DJANGORESIZED_DEFAULT_SIZE = [400, 300]
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = BASE_DIR / 'media'
