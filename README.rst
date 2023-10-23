@@ -7,7 +7,6 @@ Features
 ========
 
 - Tested on Django 3.2, 4.0, 4.1, 4.2
-- Python 3 support
 
 Installation
 ============
