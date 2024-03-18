@@ -6,7 +6,7 @@ Resizes image origin to specified size. Compatible with sorl-thumbnail. Inherits
 Features
 ========
 
-- Tested on Django 3.2, 4.0, 4.1, 4.2
+- Tested on Django 3.2, 4.0, 4.1, 4.2, 5.0
 
 Installation
 ============
@@ -30,7 +30,7 @@ settings.py
     DJANGORESIZED_DEFAULT_FORCE_FORMAT = 'JPEG'
     DJANGORESIZED_DEFAULT_FORMAT_EXTENSIONS = {'JPEG': ".jpg"}
     DJANGORESIZED_DEFAULT_NORMALIZE_ROTATION = True
-    
+
 
 Usage
 =====
