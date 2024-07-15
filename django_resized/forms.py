@@ -58,6 +58,25 @@ def normalize_rotation(image):
     image.format = format
     return image
 
+def convert_mode_for_format(to_format, image):
+    """
+    Converts the mode of image to 'RGB' or 'RGBA' depending on format.
+    """
+    from_format = image.format.lower()
+    to_format = to_format.lower()
+    transparent_bg_fill_color = (0,0,0,0)
+
+    if from_format in ('jpg', 'jpeg') and to_format in ('png', 'webp'):
+        image = image.convert('RGBA')
+
+    if from_format in ('png', 'webp'):
+        image = image.convert('RGBA') if image.mode != 'RGBA' else image
+        if to_format in ('jpg', 'jpeg'):
+            bg = Image.new('RGBA', image.size, transparent_bg_fill_color)
+            image = Image.alpha_composite(bg, image).convert('RGB')
+
+    return image
+
 
 class ResizedImageFieldFile(ImageField.attr_class):
 
@@ -68,12 +87,8 @@ class ResizedImageFieldFile(ImageField.attr_class):
         if DEFAULT_NORMALIZE_ROTATION:
             img = normalize_rotation(img)
 
-        rgb_formats = ('jpeg', 'jpg')
-        rgba_formats = ('png')
-        if self.field.force_format and self.field.force_format.lower() in rgb_formats and img.mode != 'RGB':
-            img = img.convert('RGB')
-        if self.field.force_format and self.field.force_format.lower() in rgba_formats and img.mode != 'RGBA':
-            img = img.convert('RGBA')
+        if self.field.force_format:
+            img = convert_mode_for_format(self.field.force_format, img)
 
         try:
             # Replace ANTIALIAS in PIL 9
