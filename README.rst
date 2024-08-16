@@ -6,7 +6,7 @@ Resizes image origin to specified size. Compatible with sorl-thumbnail. Inherits
 Features
 ========
 
-- Tested on Django 3.2, 4.0, 4.1, 4.2, 5.0
+- Tested on Django 3.2, 4.0, 4.1, 4.2, 5.0, 5.1
 
 Installation
 ============
