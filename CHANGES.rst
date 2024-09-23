@@ -4,7 +4,7 @@ Changes
 1.0.3 (unreleased)
 ------------------
 
--
+- Fix conversion issues when converting from formats with alpha channel(png,webp) to jpeg format #59 
 
 1.0.2 (2022-08-16)
 ------------------
