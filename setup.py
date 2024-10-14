@@ -10,7 +10,7 @@ from setuptools import setup, find_packages
 
 setup(
     name     = 'django-resized',
-    version  = '1.0.3dev',
+    version  = '1.0.3',
     packages = ['django_resized'],
     requires = ['python (>= 3.7)', 'django (>= 3.2)'],
     description  = 'Resizes image origin to specified size.',
