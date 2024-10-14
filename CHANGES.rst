@@ -1,10 +1,15 @@
 Changes
 =======
 
+1.0.4 (unreleased)
+------------------
+
+-
+
 1.0.3 (2024-12-14)
 ------------------
 
-- Fix conversion issues when converting from formats with alpha channel(png,webp) to jpeg format #59 
+- Fix conversion issues when converting from formats with alpha channel(png,webp) to jpeg format #59
 - Tests against django 5.1 #60
 
 1.0.2 (2022-08-16)
