@@ -138,6 +138,7 @@ class ResizedImageFieldFile(ImageField.attr_class):
 
         name = self.get_name(name, img_format)
         super().save(name, new_content, save)
+        self.field.update_dimension_fields(self.instance, force=True)
 
     def get_name(self, name, format):
         extensions = Image.registered_extensions()
