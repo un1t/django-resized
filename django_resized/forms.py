@@ -58,13 +58,14 @@ def normalize_rotation(image):
     image.format = format
     return image
 
+
 def convert_mode_for_format(to_format, image):
     """
     Converts the mode of image to 'RGB' or 'RGBA' depending on format.
     """
     from_format = image.format.lower()
     to_format = to_format.lower()
-    transparent_bg_fill_color = (0,0,0,0)
+    transparent_bg_fill_color = (0, 0, 0, 0)
 
     if from_format in ('jpg', 'jpeg') and to_format in ('png', 'webp'):
         image = image.convert('RGBA')
