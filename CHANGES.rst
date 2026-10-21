@@ -4,7 +4,7 @@ Changes
 1.0.4 (unreleased)
 ------------------
 
--
+- Resize every frame of animated GIFs instead of keeping only the first one #30
 
 1.0.3 (2024-12-14)
 ------------------

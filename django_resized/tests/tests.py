@@ -1,7 +1,8 @@
 # coding: utf-8
 import os
 import shutil
-from PIL import Image
+from io import BytesIO
+from PIL import Image, ImageFile, ImageSequence
 
 from django.conf import settings
 from django.core import checks
@@ -138,6 +139,48 @@ class ResizeTest(TestCase):
         im2 = Image.open(product.image2.path)
         self.assertEqual(im2.size, (50, 50))
         self.assertEqual(im2.format, 'PNG')
+
+    def test_maxblock_restored(self):
+        maxblock = ImageFile.MAXBLOCK
+        Product.objects.create(
+            image7=File(open('media/big.jpg', 'rb')),
+            image2=self.animated_gif(loop=0),
+        )
+        self.assertEqual(ImageFile.MAXBLOCK, maxblock)
+
+    def animated_gif(self, **save_kwargs):
+        frames = [Image.new('RGB', (800, 600), color) for color in ('red', 'green', 'blue')]
+        content = BytesIO()
+        frames[0].save(content, format='GIF', save_all=True, append_images=frames[1:], duration=[50, 100, 150], **save_kwargs)
+        return File(content, name='animated.gif')
+
+    def test_resize_animated_gif(self):
+        product = Product.objects.create(
+            image2=self.animated_gif(loop=0),
+        )
+        im2 = Image.open(product.image2.path)
+        self.assertEqual(im2.format, 'GIF')
+        self.assertEqual(im2.size, (400, 300))
+        self.assertEqual(im2.n_frames, 3)
+        self.assertEqual(im2.info['loop'], 0)
+        frames = [(frame.info['duration'], frame.convert('RGB').getpixel((200, 150))) for frame in ImageSequence.Iterator(im2)]
+        self.assertEqual(frames, [(50, (255, 0, 0)), (100, (0, 128, 0)), (150, (0, 0, 255))])
+
+    def test_resize_animated_gif_crop(self):
+        product = Product.objects.create(
+            image3=self.animated_gif(loop=0),
+        )
+        im3 = Image.open(product.image3.path)
+        self.assertEqual(im3.size, (40, 40))
+        self.assertEqual(im3.n_frames, 3)
+
+    def test_resize_animated_gif_without_loop(self):
+        product = Product.objects.create(
+            image2=self.animated_gif(),
+        )
+        im2 = Image.open(product.image2.path)
+        self.assertEqual(im2.n_frames, 3)
+        self.assertNotIn('loop', im2.info)
 
 
 class ResizeFieldTest(TestCase):

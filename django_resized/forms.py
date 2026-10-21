@@ -1,6 +1,6 @@
 import warnings
 from io import BytesIO
-from PIL import Image, ImageFile, ImageOps, ExifTags
+from PIL import Image, ImageFile, ImageOps, ImageSequence, ExifTags
 from django.conf import settings
 from django.core import checks
 from django.core.files.base import ContentFile
@@ -99,6 +99,45 @@ class ResizedImageFieldFile(ImageField.attr_class):
         if self.field.size is None:
             self.field.size = img.size
 
+        img_info = img.info
+        if not self.field.keep_meta:
+            img_info.pop('exif', None)
+
+        img_format = img.format if self.field.force_format is None else self.field.force_format
+        new_content = BytesIO()
+        previous_maxblock = ImageFile.MAXBLOCK
+        try:
+            if img_format == 'GIF' and getattr(img, 'is_animated', False):
+                # palette-bound keys (transparency, background) are invalid after re-quantizing, keep only the loop
+                gif_info = {'loop': img_info['loop']} if 'loop' in img_info else {}
+                frames, durations = [], []
+                for frame in ImageSequence.Iterator(img):
+                    durations.append(frame.info.get('duration', 100))
+                    # Pillow composites each frame onto the previous ones, so this is the full visible frame
+                    frames.append(self.resize(frame.convert('RGBA'), resample))
+                ImageFile.MAXBLOCK = max(ImageFile.MAXBLOCK, frames[0].size[0] * frames[0].size[1])
+                frames[0].save(
+                    new_content,
+                    format=img_format,
+                    save_all=True,
+                    append_images=frames[1:],
+                    duration=durations,
+                    disposal=2,  # clear before each frame, otherwise transparent areas ghost
+                    **gif_info,
+                )
+            else:
+                thumb = self.resize(img, resample)
+                ImageFile.MAXBLOCK = max(ImageFile.MAXBLOCK, thumb.size[0] * thumb.size[1])
+                thumb.save(new_content, format=img_format, quality=self.field.quality, **img_info)
+        finally:
+            # MAXBLOCK is a process-wide Pillow global, don't leak the raised value to later saves
+            ImageFile.MAXBLOCK = previous_maxblock
+        new_content = ContentFile(new_content.getvalue())
+
+        name = self.get_name(name, img_format)
+        super().save(name, new_content, save)
+
+    def resize(self, img, resample):
         if self.field.crop:
             thumb = ImageOps.fit(
                 img,
@@ -125,19 +164,7 @@ class ResizedImageFieldFile(ImageField.attr_class):
                 self.field.scale,
                 resample
             )
-
-        img_info = img.info
-        if not self.field.keep_meta:
-            img_info.pop('exif', None)
-
-        ImageFile.MAXBLOCK = max(ImageFile.MAXBLOCK, thumb.size[0] * thumb.size[1])
-        new_content = BytesIO()
-        img_format = img.format if self.field.force_format is None else self.field.force_format
-        thumb.save(new_content, format=img_format, quality=self.field.quality, **img_info)
-        new_content = ContentFile(new_content.getvalue())
-
-        name = self.get_name(name, img_format)
-        super().save(name, new_content, save)
+        return thumb
 
     def get_name(self, name, format):
         extensions = Image.registered_extensions()
